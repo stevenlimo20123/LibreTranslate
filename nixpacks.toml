@@ -1,0 +1,7 @@
+# Force Dokploy/Nixpacks to deploy this repository as a Node/Next.js app.
+# The repository still contains the original Python project files, so limiting
+# providers prevents Nixpacks from running the Python `pip install .` phase.
+providers = ["node"]
+
+[start]
+cmd = "npm run start"
