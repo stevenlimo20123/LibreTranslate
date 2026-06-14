@@ -10,6 +10,13 @@ const fallbackLanguages = [
   { code: 'de', name: 'German' },
   { code: 'it', name: 'Italian' },
   { code: 'pt', name: 'Portuguese' },
+  { code: 'ru', name: 'Russian' },
+  { code: 'ja', name: 'Japanese' },
+  { code: 'ko', name: 'Korean' },
+  { code: 'zh', name: 'Chinese' },
+  { code: 'zh-TW', name: 'Chinese (traditional)' },
+  { code: 'ar', name: 'Arabic' },
+  { code: 'hi', name: 'Hindi' },
 ];
 
 export default function Home() {
@@ -30,9 +37,7 @@ export default function Home() {
         if (!isMounted || !Array.isArray(data)) return;
         setLanguages([{ code: 'auto', name: 'Auto Detect' }, ...data]);
       })
-      .catch(() => {
-        if (isMounted) setStatus('Using default language list. Configure LIBRETRANSLATE_API_URL if needed.');
-      });
+      .catch(() => {});
 
     return () => {
       isMounted = false;
@@ -82,8 +87,8 @@ export default function Home() {
         <p className="eyebrow">Dokploy-ready Next.js app</p>
         <h1>LibreTranslate</h1>
         <p className="subtitle">
-          Deploy this Next.js interface and point it at any LibreTranslate-compatible API with
-          <code>LIBRETRANSLATE_API_URL</code>.
+          A ready-to-use translation interface that automatically falls back to a no-key
+          translation service when the LibreTranslate endpoint is unavailable.
         </p>
       </section>
 
