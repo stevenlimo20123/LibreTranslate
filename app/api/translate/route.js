@@ -1,16 +1,23 @@
-const apiBaseUrl = process.env.LIBRETRANSLATE_API_URL || 'https://libretranslate.com';
-const apiKey = process.env.LIBRETRANSLATE_API_KEY;
+import {
+  buildLibreTranslatePayload,
+  getApiBaseUrl,
+  normalizeLibreTranslateError,
+} from '../_lib/libretranslate';
 
 export async function POST(request) {
   const payload = await request.json();
 
-  const response = await fetch(`${apiBaseUrl.replace(/\/$/, '')}/translate`, {
+  const response = await fetch(`${getApiBaseUrl()}/translate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(apiKey ? { ...payload, api_key: apiKey } : payload),
+    body: JSON.stringify(buildLibreTranslatePayload(payload)),
   });
 
   const data = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    return Response.json({ error: normalizeLibreTranslateError(data) }, { status: response.status });
+  }
 
   return Response.json(data, { status: response.status });
 }
