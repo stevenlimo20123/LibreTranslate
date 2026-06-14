@@ -1,10 +1,13 @@
-const apiBaseUrl = process.env.LIBRETRANSLATE_API_URL || 'https://libretranslate.com';
+import { fallbackLanguages, fetchLibreTranslate } from '../_lib/libretranslate';
 
 export async function GET() {
-  const response = await fetch(`${apiBaseUrl.replace(/\/$/, '')}/languages`, {
-    next: { revalidate: 3600 },
-  });
-  const data = await response.json().catch(() => []);
+  try {
+    const { data } = await fetchLibreTranslate('/languages', {
+      next: { revalidate: 3600 },
+    });
 
-  return Response.json(data, { status: response.status });
+    return Response.json(Array.isArray(data) ? data : fallbackLanguages);
+  } catch {
+    return Response.json(fallbackLanguages);
+  }
 }

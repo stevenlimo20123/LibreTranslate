@@ -1,16 +1,22 @@
-const apiBaseUrl = process.env.LIBRETRANSLATE_API_URL || 'https://libretranslate.com';
-const apiKey = process.env.LIBRETRANSLATE_API_KEY;
+import { fetchGoogleTranslateFallback, fetchLibreTranslate } from '../_lib/libretranslate';
 
 export async function POST(request) {
   const payload = await request.json();
 
-  const response = await fetch(`${apiBaseUrl.replace(/\/$/, '')}/translate`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(apiKey ? { ...payload, api_key: apiKey } : payload),
-  });
+  try {
+    const { data } = await fetchLibreTranslate('/translate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
 
-  const data = await response.json().catch(() => ({}));
-
-  return Response.json(data, { status: response.status });
+    return Response.json(data);
+  } catch {
+    try {
+      const data = await fetchGoogleTranslateFallback(payload);
+      return Response.json(data);
+    } catch (error) {
+      return Response.json({ error: error.message || 'Translation failed.' }, { status: 502 });
+    }
+  }
 }
