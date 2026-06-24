@@ -1,17 +1,7 @@
-# Ensure Nixpacks has all files required to build the local Python package
-# during the install phase. The Python provider normally copies only
-# pyproject.toml for dependency-layer caching, but hatchling reads VERSION
-# and package files while running `pip install .`.
-[phases.install]
-onlyIncludeFiles = [
-  "...",
-  "VERSION",
-  "README.md",
-  "LICENSE",
-  "babel.cfg",
-  "main.py",
-  "manage.py",
-  "wsgi.py",
-  "libretranslate/**",
-  "scripts/**",
-]
+# Force Dokploy/Nixpacks to deploy this repository as a Node/Next.js app.
+# The repository still contains the original Python project files, so limiting
+# providers prevents Nixpacks from running the Python `pip install .` phase.
+providers = ["node"]
+
+[start]
+cmd = "npm run start"
