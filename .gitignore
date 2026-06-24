@@ -134,7 +134,3 @@ installed_models/
 # Misc
 api_keys.db
 suggestions.db
-# Next.js
-.next/
-out/
-node_modules/
